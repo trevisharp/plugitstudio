@@ -1,18 +1,44 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
 
 namespace Model.Script
 {
     public class CustomComponent : Component
     {
-        private Dictionary<string, object> state = new Dictionary<string, object>();
-        
-        private Action<Dictionary<string, object>> tick;
+        public CustomComponent(State state = null, 
+            Action<State> tick = null,
+            Action load = null,
+            Action<State> start = null,
+            Action<State> enter = null,
+            Action<State> leave = null,
+            Action<Point, State> up = null,
+            Action<Point, State> down = null,
+            Action<Point, State> move = null,
+            Action<Graphics, int, int, State> draw = null,
+            Action<Keys, bool, bool, bool, State> key = null)
+        {
+            this.state = state ?? new State();
+            this.tick = tick;
+            this.load = load;
+            this.start = start;
+            this.enter = enter;
+            this.leave = leave;
+            this.up = up;
+            this.down = down;
+            this.move = move;
+            this.draw = draw;
+            this.key = key;
+        }
+
+        private State state;
+        public override State State
+        {
+            get => state;
+            protected set => state = value;
+        }
+
+        private Action<State> tick;
         public override void Tick()
         {
             if (tick != null)
@@ -26,63 +52,63 @@ namespace Model.Script
                 load();
         }
         
-        private Action<Dictionary<string, object>> start;
+        private Action<State> start;
         public override void Start()
         {
             if (start != null)
                 start(state);
         }
 
-        private Action<Dictionary<string, object>> enter;
+        private Action<State> enter;
         public override void MouseEnter()
         {
             if (enter != null)
                 enter(state);
         }
 
-        private Action<Dictionary<string, object>> leave;
+        private Action<State> leave;
         public override void MouseLeave()
         {
             if (leave != null)
                 leave(state);
         }
 
-        private Action<Point, Dictionary<string, object>> up;
+        private Action<Point, State> up;
         public override void MouseUp(Point p)
         {
             if (up != null)
                 up(p, state);
         }
 
-        private Action<Point, Dictionary<string, object>> down;
+        private Action<Point, State> down;
         public override void MouseDown(Point p)
         {
             if (down != null)
                 down(p, state);
         }
 
-        private Action<Point, Dictionary<string, object>> move;
+        private Action<Point, State> move;
         public override void MouseMove(Point p)
         {
             if (move != null)
                 move(p, state);
         }
 
-        private Action<Graphics, int, int, Dictionary<string, object>> draw;
+        private Action<Graphics, int, int, State> draw;
         public override void Draw(Graphics g, int width, int height)
         {
             if (draw != null)
                 draw(g, width, height, state);
         }
 
-        private Action<Keys, bool, bool, bool, Dictionary<string, object>> key;
+        private Action<Keys, bool, bool, bool, State> key;
         public override void KeyDown(Keys keys, bool alt, bool ctrl, bool shift)
         {
             if (key != null)
                 key(keys, alt, ctrl, shift, state);
         }
 
-        public override Component Clone(Dictionary<string, object> state)
+        public override Component Clone(State state)
         {
             CustomComponent cc = new CustomComponent();
             cc.tick = tick;
@@ -96,67 +122,6 @@ namespace Model.Script
             cc.start = start;
             cc.up = up;
             cc.Start();
-            return cc;
-        }
-
-        //Refactor
-        public static async Task<CustomComponent> Create(string code)
-        {
-            code += "\n\nnew object[] { ";
-            if (code.Contains(("behavior draw")))
-            {
-                code = code.Replace("behavior draw", 
-                           "Action<Graphics, int, int, Dictionary<string, object>> draw = (g, width, height, state) => {")
-                       + "draw,";
-            }
-            else code += "null,";
-            
-            if (code.Contains(("behavior tick")))
-            {
-                code = code.Replace("behavior tick", "Action<Dictionary<string, object>> tick = (state) => {")
-                       + "tick,";
-            }
-            else code += "null,";
-            
-            if (code.Contains(("behavior load")))
-            {
-                code = code.Replace("behavior load", "Action<Dictionary<string, object>> load = (state) => {")
-                       + "load,";
-            }
-            else code += "null,";
-            
-            if (code.Contains(("behavior start")))
-            {
-                code = code.Replace("behavior start", "Action<Dictionary<string, object>> start = (state) => {")
-                       + "start,";
-            }
-            else code += "null,";
-            
-            code = code
-                .Replace("create()", "")
-                .Replace("end", "};")
-                .Replace("clear", "g.Clear")
-                .Replace("fillrect", "g.FillRectangle")
-                .Replace("color", "Color.FromArgb")
-                             + " }";
-
-            var options = ScriptOptions.Default
-                .AddReferences(typeof(Graphics).Assembly)
-                .AddReferences(typeof(Object).Assembly)
-                .AddImports("System")
-                .AddImports("System.Collections.Generic")
-                .AddImports("System.Drawing");
-
-            var result = await CSharpScript.EvaluateAsync(code, options) as object[];
-            CustomComponent cc = new CustomComponent();
-            if (result == null)
-                return cc;
-
-            cc.draw = result[0] as Action<Graphics, int, int, Dictionary<string, object>>;
-            cc.tick = result[1] as Action<Dictionary<string, object>>;
-            cc.load = result[2] as Action;
-            cc.start = result[3] as Action<Dictionary<string, object>>;
-
             return cc;
         }
     }

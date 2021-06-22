@@ -8,12 +8,13 @@ namespace Model
 {
     public class Plugin
     {
-        private List<Component> components = new List<Component>();
-        public IEnumerable<Component> Components => this.components;
+        private List<ComponentPrototype> components = new List<ComponentPrototype>();
+        public IEnumerable<ComponentPrototype> Components => this.components;
         
         public static async Task<Plugin> Open(string path)
         {
             Plugin plugin = new Plugin();
+            ScriptAnalyzer analyzer = new ScriptAnalyzer();
             using (var archive = ZipFile.OpenRead(path))
             {
                 foreach (var entry in archive.Entries)
@@ -22,7 +23,7 @@ namespace Model
                     {
                         var reader = new StreamReader(stream);
                         var code = await reader.ReadToEndAsync();
-                        plugin.components.Add(await CustomComponent.Create(code));
+                        plugin.components.Add(await analyzer.Compile(code));
                     }
                 }
             }
