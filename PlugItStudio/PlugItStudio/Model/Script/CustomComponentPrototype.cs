@@ -7,7 +7,7 @@ namespace Model.Script
 {
     public class CustomComponentPrototype : ComponentPrototype
     {
-        public Action Load { get; set; }
+        public Action OnLoad { get; set; }
         public Action<Dictionary<string, object>> Tick { get; set; }
         public Action<Dictionary<string, object>> Start { get; set; }
         public Action<Dictionary<string, object>> Enter { get; set; }
@@ -21,9 +21,15 @@ namespace Model.Script
         public override Component Instance()
         {
             var component = new CustomComponent(null, Tick, 
-                Load, Start, Enter, Leave, Up, Down, Move, Draw, Key);
+                OnLoad, Start, Enter, Leave, Up, Down, Move, Draw, Key);
             component.Start();
             return component;
+        }
+
+        public override void Load()
+        {
+            if (OnLoad != null)
+                OnLoad();
         }
     }
 }

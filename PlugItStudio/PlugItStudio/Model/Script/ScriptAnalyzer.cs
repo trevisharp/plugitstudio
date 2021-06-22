@@ -66,7 +66,7 @@ namespace Model.Script
 
             ccp.Draw = result[0] as Action<Graphics, int, int, Dictionary<string, object>>;
             ccp.Tick = result[1] as Action<Dictionary<string, object>>;
-            ccp.Load = result[2] as Action;
+            ccp.OnLoad = result[2] as Action;
             ccp.Start = result[3] as Action<Dictionary<string, object>>;
             ccp.Up = result[4] as Action<Point, Dictionary<string, object>>;
             ccp.Down = result[5] as Action<Point, Dictionary<string, object>>;

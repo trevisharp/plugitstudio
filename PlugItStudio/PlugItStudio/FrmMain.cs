@@ -11,6 +11,9 @@ using Model.Script;
 
 public class FrmMain : Form
 {
+    private List<ComponentPrototype> _prototypes = new List<ComponentPrototype>();
+    private List<Component> _components = new List<Component>();
+    
     private Picture p;
     private Graphics g;
     private PictureBox pb;
@@ -31,10 +34,39 @@ public class FrmMain : Form
         this.tm = new Timer();
         this.tm.Interval = 20;
 
-        this.PreviewKeyDown += (sender, e) =>
+        this.PreviewKeyDown += async (sender, e) =>
         {
-            if (e.KeyCode == Keys.Escape)
-                Application.Exit();
+            if (e.KeyCode == Keys.Oemtilde)
+            {
+                if (e.Control)
+                    Application.Exit();
+                else if (e.Shift)
+                {
+                }
+                else if (e.Alt)
+                {
+                    OpenFileDialog ofd = new OpenFileDialog();
+                    if (ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        foreach (var file in ofd.FileNames)
+                        {
+                            try
+                            {
+                                var plugin = await Plugin.Open(file);
+                                this._prototypes.AddRange(plugin.Components);
+                            }
+                            catch { }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var component in _components)
+                    component.KeyDown(e.KeyCode, e.Alt, e.Control, e.Shift);
+            }
+            foreach (var component in _components)
+                component.Tick();
         };
 
         this.Load += async delegate
@@ -49,6 +81,10 @@ public class FrmMain : Form
         tm.Tick += delegate
         {
             g.Clear(c1);
+            foreach (var component in _components)
+                component.Tick();
+            foreach (var component in _components)
+                component.Draw(g, pb.Width, pb.Height);
             pb.Refresh();
         };
     }

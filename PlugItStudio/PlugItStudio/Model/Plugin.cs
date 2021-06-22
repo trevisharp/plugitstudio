@@ -27,6 +27,8 @@ namespace Model
                     }
                 }
             }
+            foreach (var prototype in plugin.Components)
+                prototype.Load();
             return plugin;
         }
     }
