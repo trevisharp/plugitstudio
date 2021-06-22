@@ -37,6 +37,7 @@ public class FrmMain : Form
         {
             if (e.KeyCode == Keys.Escape)
                 Application.Exit();
+            c.KeyDown(e.KeyCode, e.Alt, e.Control, e.Shift);
         };
 
         this.Load += async delegate
@@ -48,14 +49,22 @@ public class FrmMain : Form
 
             string code = @"
                 int r = 0;
-                draw
+                behavior draw
                 {
                     clear(color((byte)(r % 255), 0, 0));
                 }
 
-                tick
+                behavior tick
                 {
                     r++;
+                }
+                
+                behavior key
+                {
+                    if (keys == Keys.A)
+                        r = 0;
+                    if (keys == Keys.B)
+                        r = 128;
                 }
             ";
             ScriptAnalyzer sa = new ScriptAnalyzer();
