@@ -1,0 +1,19 @@
+int r = 0;
+
+behavior draw
+{
+	clear(color((byte)(r % 255), 0, 0));
+}
+
+behavior tick
+{
+	r++;
+}
+
+behavior key
+{
+	if (keys == Keys.A)
+		r = 0;
+	if (keys == Keys.B)
+		r = 128;
+}

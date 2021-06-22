@@ -11,8 +11,6 @@ using Model.Script;
 
 public class FrmMain : Form
 {
-    private Component c;
-    
     private Picture p;
     private Graphics g;
     private PictureBox pb;
@@ -37,7 +35,6 @@ public class FrmMain : Form
         {
             if (e.KeyCode == Keys.Escape)
                 Application.Exit();
-            c.KeyDown(e.KeyCode, e.Alt, e.Control, e.Shift);
         };
 
         this.Load += async delegate
@@ -46,40 +43,12 @@ public class FrmMain : Form
             g = p.Graphics;
             g.Clear(c1);
             pb.Image = p.Bitmap;
-
-            string code = @"
-                int r = 0;
-                behavior draw
-                {
-                    clear(color((byte)(r % 255), 0, 0));
-                }
-
-                behavior tick
-                {
-                    r++;
-                }
-                
-                behavior key
-                {
-                    if (keys == Keys.A)
-                        r = 0;
-                    if (keys == Keys.B)
-                        r = 128;
-                }
-            ";
-            ScriptAnalyzer sa = new ScriptAnalyzer();
-            var prototype = await sa.Compile(code);
-            var component = prototype.Instance();
-            c = component;
-            
             tm.Start();
         };
 
         tm.Tick += delegate
         {
             g.Clear(c1);
-            c.Tick();
-            c.Draw(g, pb.Width, pb.Height);
             pb.Refresh();
         };
     }
