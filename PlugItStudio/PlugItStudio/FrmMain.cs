@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -8,9 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Model;
+using Model.Script;
 
 public class FrmMain : Form
 {
+    private Component c;
+    
     private Picture p;
     private Graphics g;
     private PictureBox pb;
@@ -43,12 +45,32 @@ public class FrmMain : Form
             g = p.Graphics;
             g.Clear(c1);
             pb.Image = p.Bitmap;
+
+            string code = @"
+                int r = 0;
+                draw
+                {
+                    clear(color((byte)(r % 255), 0, 0));
+                }
+
+                tick
+                {
+                    r++;
+                }
+            ";
+            ScriptAnalyzer sa = new ScriptAnalyzer();
+            var prototype = await sa.Compile(code);
+            var component = prototype.Instance();
+            c = component;
+            
             tm.Start();
         };
 
         tm.Tick += delegate
         {
             g.Clear(c1);
+            c.Tick();
+            c.Draw(g, pb.Width, pb.Height);
             pb.Refresh();
         };
     }

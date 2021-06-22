@@ -8,15 +8,15 @@ namespace Model.Script
     public class CustomComponentPrototype : ComponentPrototype
     {
         public Action Load { get; set; }
-        public Action<State> Tick { get; set; }
-        public Action<State> Start { get; set; }
-        public Action<State> Enter { get; set; }
-        public Action<State> Leave { get; set; }
-        public Action<Point, State> Up { get; set; }
-        public Action<Point, State> Down { get; set; }
-        public Action<Point, State> Move { get; set; }
-        public Action<Graphics, int, int, State> Draw { get; set; }
-        public Action<Keys, bool, bool, bool, State> Key { get; set; }
+        public Action<Dictionary<string, object>> Tick { get; set; }
+        public Action<Dictionary<string, object>> Start { get; set; }
+        public Action<Dictionary<string, object>> Enter { get; set; }
+        public Action<Dictionary<string, object>> Leave { get; set; }
+        public Action<Point, Dictionary<string, object>> Up { get; set; }
+        public Action<Point, Dictionary<string, object>> Down { get; set; }
+        public Action<Point, Dictionary<string, object>> Move { get; set; }
+        public Action<Graphics, int, int, Dictionary<string, object>> Draw { get; set; }
+        public Action<Keys, bool, bool, bool, Dictionary<string, object>> Key { get; set; }
 
         public override Component Instance()
         {

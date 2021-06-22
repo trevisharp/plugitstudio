@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Model.Script
 {
     public class CustomComponent : Component
     {
         public CustomComponent(State state = null, 
-            Action<State> tick = null,
+            Action<Dictionary<string, object>> tick = null,
             Action load = null,
-            Action<State> start = null,
-            Action<State> enter = null,
-            Action<State> leave = null,
-            Action<Point, State> up = null,
-            Action<Point, State> down = null,
-            Action<Point, State> move = null,
-            Action<Graphics, int, int, State> draw = null,
-            Action<Keys, bool, bool, bool, State> key = null)
+            Action<Dictionary<string, object>> start = null,
+            Action<Dictionary<string, object>> enter = null,
+            Action<Dictionary<string, object>> leave = null,
+            Action<Point, Dictionary<string, object>> up = null,
+            Action<Point, Dictionary<string, object>> down = null,
+            Action<Point, Dictionary<string, object>> move = null,
+            Action<Graphics, int, int, Dictionary<string, object>> draw = null,
+            Action<Keys, bool, bool, bool, Dictionary<string, object>> key = null)
         {
             this.state = state ?? new State();
             this.tick = tick;
@@ -38,7 +39,7 @@ namespace Model.Script
             protected set => state = value;
         }
 
-        private Action<State> tick;
+        private Action<Dictionary<string, object>> tick;
         public override void Tick()
         {
             if (tick != null)
@@ -52,56 +53,56 @@ namespace Model.Script
                 load();
         }
         
-        private Action<State> start;
+        private Action<Dictionary<string, object>> start;
         public override void Start()
         {
             if (start != null)
                 start(state);
         }
 
-        private Action<State> enter;
+        private Action<Dictionary<string, object>> enter;
         public override void MouseEnter()
         {
             if (enter != null)
                 enter(state);
         }
 
-        private Action<State> leave;
+        private Action<Dictionary<string, object>> leave;
         public override void MouseLeave()
         {
             if (leave != null)
                 leave(state);
         }
 
-        private Action<Point, State> up;
+        private Action<Point, Dictionary<string, object>> up;
         public override void MouseUp(Point p)
         {
             if (up != null)
                 up(p, state);
         }
 
-        private Action<Point, State> down;
+        private Action<Point, Dictionary<string, object>> down;
         public override void MouseDown(Point p)
         {
             if (down != null)
                 down(p, state);
         }
 
-        private Action<Point, State> move;
+        private Action<Point, Dictionary<string, object>> move;
         public override void MouseMove(Point p)
         {
             if (move != null)
                 move(p, state);
         }
 
-        private Action<Graphics, int, int, State> draw;
+        private Action<Graphics, int, int, Dictionary<string, object>> draw;
         public override void Draw(Graphics g, int width, int height)
         {
             if (draw != null)
                 draw(g, width, height, state);
         }
 
-        private Action<Keys, bool, bool, bool, State> key;
+        private Action<Keys, bool, bool, bool, Dictionary<string, object>> key;
         public override void KeyDown(Keys keys, bool alt, bool ctrl, bool shift)
         {
             if (key != null)
