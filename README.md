@@ -30,7 +30,8 @@ Lembrando que este é o protótipo do componente, que possui suas instâncias. A
 
 Existem vários comportamentos que podem ser implementados:
 
- - draw: Código de desenho do componente
+ - draw: Código de desenho do componente.
+ - tick: Código executado a cada loop de iteração.
  - start: Código executado quando o componente é instânciado.
  - load: Código executado quando o componente tem seu protótipo carregado.
  - key: Código executado quando o componente está presente e escuta um caractér.
