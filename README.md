@@ -16,11 +16,17 @@ Plugins são .zip de arquivos do projeto com extensão renomeada para .plugin. P
 Componentes são código C# com um pouco de pré-processamento. As funções que descrevem o funcionamento desses componentes são definidas com a palavra-chave **behavior** da seguinte forma:
 
 ```
+int r = 0;
+int g = 0;
+int b = 0;
+
 behavior draw
 {
-	clear(color((byte)(r % 255), 0, 0));
+	clear(color(r, g, b));
 }
 ```
+
+Lembrando que este é o protótipo do componente, que possui suas instâncias. As variáveis r, g e b são globais para todas as instâncias do mesmo protótipo de componente. Usando o dicionário state é possível acessar o estado do componente.
 
 Existem vários comportamentos que podem ser implementados:
 
@@ -43,3 +49,5 @@ Para criar um componente basta utilizar o comando create [nome do arquivo do com
 - [ ] Melhorar processo de criação dos componentes, trazendo mais possibilidades.
 - [ ] Adicionar behaviors válidos.
 - [ ] Adicionar plugins de compilação.
+- [ ] Adicionar/Melhorar gerenciamento de estados.
+- [ ] Adicionar subcomponentes.
