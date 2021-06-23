@@ -34,6 +34,15 @@ public class FrmMain : Form
         this.tm = new Timer();
         this.tm.Interval = 20;
 
+        GlobalOperations.CreateBehavior = s =>
+        {
+            foreach (var prototype in this._prototypes)
+            {
+                if (prototype.Name == s)
+                    this._components.Add(prototype.Instance());
+            }
+        };
+
         this.PreviewKeyDown += async (sender, e) =>
         {
             if (e.KeyCode == Keys.Oemtilde)
@@ -57,6 +66,8 @@ public class FrmMain : Form
                             }
                             catch { }
                         }
+                        foreach (var prototype in this._prototypes)
+                            prototype.Load();
                     }
                 }
             }

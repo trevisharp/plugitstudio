@@ -7,16 +7,16 @@ namespace Model.Script
 {
     public class CustomComponentPrototype : ComponentPrototype
     {
-        public Action OnLoad { get; set; }
-        public Action<Dictionary<string, object>> Tick { get; set; }
+        public Action<Action<string>> OnLoad { get; set; }
+        public Action<Dictionary<string, object>, Action<string>> Tick { get; set; }
         public Action<Dictionary<string, object>> Start { get; set; }
         public Action<Dictionary<string, object>> Enter { get; set; }
         public Action<Dictionary<string, object>> Leave { get; set; }
-        public Action<Point, Dictionary<string, object>> Up { get; set; }
-        public Action<Point, Dictionary<string, object>> Down { get; set; }
-        public Action<Point, Dictionary<string, object>> Move { get; set; }
+        public Action<Point, Dictionary<string, object>, Action<string>> Up { get; set; }
+        public Action<Point, Dictionary<string, object>, Action<string>> Down { get; set; }
+        public Action<Point, Dictionary<string, object>, Action<string>> Move { get; set; }
         public Action<Graphics, int, int, Dictionary<string, object>> Draw { get; set; }
-        public Action<Keys, bool, bool, bool, Dictionary<string, object>> Key { get; set; }
+        public Action<Keys, bool, bool, bool, Dictionary<string, object>, Action<string>> Key { get; set; }
 
         public override Component Instance()
         {
@@ -29,7 +29,7 @@ namespace Model.Script
         public override void Load()
         {
             if (OnLoad != null)
-                OnLoad();
+                OnLoad(GlobalOperations.Create);
         }
     }
 }

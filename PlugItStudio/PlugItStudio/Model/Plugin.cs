@@ -3,6 +3,7 @@ using Model.Script;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model
 {
@@ -23,12 +24,12 @@ namespace Model
                     {
                         var reader = new StreamReader(stream);
                         var code = await reader.ReadToEndAsync();
-                        plugin.components.Add(await analyzer.Compile(code));
+                        var prototype = await analyzer.Compile(code);
+                        prototype.Name = string.Concat(entry.Name.TakeWhile(c => c != '.'));
+                        plugin.components.Add(prototype);
                     }
                 }
             }
-            foreach (var prototype in plugin.Components)
-                prototype.Load();
             return plugin;
         }
     }

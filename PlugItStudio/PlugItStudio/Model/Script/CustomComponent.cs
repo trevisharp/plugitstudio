@@ -8,16 +8,16 @@ namespace Model.Script
     public class CustomComponent : Component
     {
         public CustomComponent(State state = null, 
-            Action<Dictionary<string, object>> tick = null,
-            Action load = null,
+            Action<Dictionary<string, object>, Action<string>> tick = null,
+            Action<Action<string>> load = null,
             Action<Dictionary<string, object>> start = null,
             Action<Dictionary<string, object>> enter = null,
             Action<Dictionary<string, object>> leave = null,
-            Action<Point, Dictionary<string, object>> up = null,
-            Action<Point, Dictionary<string, object>> down = null,
-            Action<Point, Dictionary<string, object>> move = null,
+            Action<Point, Dictionary<string, object>, Action<string>> up = null,
+            Action<Point, Dictionary<string, object>, Action<string>> down = null,
+            Action<Point, Dictionary<string, object>, Action<string>> move = null,
             Action<Graphics, int, int, Dictionary<string, object>> draw = null,
-            Action<Keys, bool, bool, bool, Dictionary<string, object>> key = null)
+            Action<Keys, bool, bool, bool, Dictionary<string, object>, Action<string>> key = null)
         {
             this.state = state ?? new State();
             this.tick = tick;
@@ -39,18 +39,18 @@ namespace Model.Script
             protected set => state = value;
         }
 
-        private Action<Dictionary<string, object>> tick;
+        private Action<Dictionary<string, object>, Action<string>> tick;
         public override void Tick()
         {
             if (tick != null)
-                tick(state);
+                tick(state, GlobalOperations.Create);
         }
 
-        private Action load;
+        private Action<Action<string>> load;
         public override void Load()
         {
             if (load != null)
-                load();
+                load(GlobalOperations.Create);
         }
         
         private Action<Dictionary<string, object>> start;
@@ -74,25 +74,25 @@ namespace Model.Script
                 leave(state);
         }
 
-        private Action<Point, Dictionary<string, object>> up;
+        private Action<Point, Dictionary<string, object>, Action<string>> up;
         public override void MouseUp(Point p)
         {
             if (up != null)
-                up(p, state);
+                up(p, state, GlobalOperations.Create);
         }
 
-        private Action<Point, Dictionary<string, object>> down;
+        private Action<Point, Dictionary<string, object>, Action<string>> down;
         public override void MouseDown(Point p)
         {
             if (down != null)
-                down(p, state);
+                down(p, state, GlobalOperations.Create);
         }
 
-        private Action<Point, Dictionary<string, object>> move;
+        private Action<Point, Dictionary<string, object>, Action<string>> move;
         public override void MouseMove(Point p)
         {
             if (move != null)
-                move(p, state);
+                move(p, state, GlobalOperations.Create);
         }
 
         private Action<Graphics, int, int, Dictionary<string, object>> draw;
@@ -102,11 +102,11 @@ namespace Model.Script
                 draw(g, width, height, state);
         }
 
-        private Action<Keys, bool, bool, bool, Dictionary<string, object>> key;
+        private Action<Keys, bool, bool, bool, Dictionary<string, object>, Action<string>> key;
         public override void KeyDown(Keys keys, bool alt, bool ctrl, bool shift)
         {
             if (key != null)
-                key(keys, alt, ctrl, shift, state);
+                key(keys, alt, ctrl, shift, state, GlobalOperations.Create);
         }
 
         public override Component Clone(State state)
