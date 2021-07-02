@@ -70,6 +70,11 @@ public class FrmMain : Form
                             prototype.Load();
                     }
                 }
+                else
+                {
+                    foreach (var component in _components)
+                        component.KeyDown(e.KeyCode, e.Alt, e.Control, e.Shift);
+                }
             }
             else
             {

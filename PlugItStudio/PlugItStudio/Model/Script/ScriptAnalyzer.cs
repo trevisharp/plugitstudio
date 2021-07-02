@@ -18,8 +18,9 @@ namespace Model.Script
         {
             CustomComponentPrototype ccp = new CustomComponentPrototype();
             StringBuilder sb = new StringBuilder();
+            sb.Append("var __rand = new Random(DateTime.Now.Millisecond);\n");
             sb.Append(code);
-            
+
             void addbehavior(string name, string arguments)
             {
                 sb = code.Contains("behavior " + name)
@@ -38,7 +39,9 @@ namespace Model.Script
 
             sb = sb
                 .Replace("clear", "g.Clear")
+                .Replace("random", "__rand.Next")   
                 .Replace("fillrect", "g.FillRectangle")
+                .Replace("brush", "new SolidBrush")
                 .Replace("color", "Color.FromArgb");
 
             sb.Append("\n\n" + @"new object[]{ 
@@ -54,11 +57,18 @@ namespace Model.Script
 
             code = sb.ToString();
 
-            Regex regex = new Regex("(create)[ ]+[a-zA-Z_][a-zA-Z_0-9]+");
+            Regex regex = new Regex("(create)[ ]+[a-zA-Z_][a-zA-Z_0-9]*");
             foreach (Match match in regex.Matches(code))
             {
                 code = code.Replace(match.Value, "create(\"" + 
                     match.Value.Substring(6).TrimStart() + "\");");
+            }
+
+            regex = new Regex("(state)[ ]*(\\.)[ ]*[a-zA-Z_][a-zA-Z_0-9]*");
+            foreach (Match match in regex.Matches(code))
+            {
+                code = code.Replace(match.Value, "state[\"" +
+                    match.Value.Substring(5).TrimStart().Substring(1).TrimStart() + "\"]");
             }
 
             var options = ScriptOptions.Default

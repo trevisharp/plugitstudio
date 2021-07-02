@@ -1,0 +1,73 @@
+behavior start
+{
+    state.x = random() % 500;
+    state.y = random() % 500;
+    state.sx = random() % 12;
+    state.sy = random() % 12;
+    state.s = 0;
+}
+
+behavior draw
+{
+    var x = (int)state.x;
+    var y = (int)state.y;
+    var sx = (int)state.sx;
+    var sy = (int)state.sy;
+    var s = (int)state.s;
+
+    if (x + 50 >= width)
+    {
+        x = width - 50;
+        sx = -sx;
+        s++;
+    }
+    else if (x <= 0)
+    {
+        x = 0;
+        sx = -sx;
+        s++;
+    }
+
+    if (y + 50 >= height)
+    {
+        y = height - 50;
+        sy = -sy;
+        s++;
+    }
+    else if (y <= 0)
+    {
+        y = 0;
+        sy = -sy;
+        s++;
+    }
+
+    if (s > 2)
+        s -= 3;
+    
+    if (s == 0)
+        fillrect(brush(color(0, 0, 255)), x, y, 50, 50);
+    else if (s == 1)
+        fillrect(brush(color(0, 255, 0)), x, y, 50, 50);
+    else if (s == 2)
+        fillrect(brush(color(255, 255, 0)), x, y, 50, 50);
+    
+    state.x = x;
+    state.y = y;
+    state.sx = sx;
+    state.sy = sy;
+    state.s = s;
+}
+
+behavior tick
+{
+    var x = (int)state.x;
+    var y = (int)state.y;
+    var sx = (int)state.sx;
+    var sy = (int)state.sy;
+
+    x += sx;
+    y += sy;
+
+    state.x = x;
+    state.y = y;
+}

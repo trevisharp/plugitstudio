@@ -50,5 +50,5 @@ Para criar um componente basta utilizar o comando create [nome do arquivo do com
 - [ ] Melhorar processo de criação dos componentes, trazendo mais possibilidades.
 - [ ] Adicionar behaviors válidos.
 - [ ] Adicionar plugins de compilação.
-- [ ] Adicionar/Melhorar gerenciamento de estados.
+- [x] Adicionar/Melhorar gerenciamento de estados.
 - [ ] Adicionar subcomponentes.
