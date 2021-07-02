@@ -16,17 +16,21 @@ Plugins são .zip de arquivos do projeto com extensão renomeada para .plugin. P
 Componentes são código C# com um pouco de pré-processamento. As funções que descrevem o funcionamento desses componentes são definidas com a palavra-chave **behavior** da seguinte forma:
 
 ```
-int r = 0;
-int g = 0;
-int b = 0;
+int g = 100;
+int b = 100;
+
+behavior start
+{
+	state.r = random() % 255;
+}
 
 behavior draw
 {
-	clear(color(r, g, b));
+	clear(color((int)state.r, g, b));
 }
 ```
 
-Lembrando que este é o protótipo do componente, que possui suas instâncias. As variáveis r, g e b são globais para todas as instâncias do mesmo protótipo de componente. Usando o dicionário state é possível acessar o estado do componente.
+Lembrando que este é o protótipo do componente, que possui suas instâncias. As variáveis g e b são globais para todas as instâncias do mesmo protótipo de componente. Usando o dicionário state é possível acessar o estado do componente. Assim, todas as instâncias pintam a tela da mesma cor, exceto pelo canal vermelho, que é aleatório para cada instância.
 
 Existem vários comportamentos que podem ser implementados:
 
@@ -40,6 +44,18 @@ Existem vários comportamentos que podem ser implementados:
  - move: Código executado quando o componente está presente e escuta um evento MouseMove.
 
 Para criar um componente basta utilizar o comando create [nome do arquivo do componente].
+
+## Funções especiais
+
+Existem várias funções especiais que podem ser usados dentro de um component.
+
+ - random: Equivalente ao Random.Next do c# podendo receber os mesmo parâmetros.
+ - clear: Limpa a tela com uma dada cor.
+ - color: Cria uma cor a partir de um valor de RGB.
+ - brush: Cria uma brush a partir de uma cor.
+ - fillrect: Desenha um retângulo a partir de uma brush, posição x, y e tamanhos de largura e altura.
+
+Futuramente existirão mais funções cubrindo mais necessidades.
 
 ## Implementações Futuras
 
