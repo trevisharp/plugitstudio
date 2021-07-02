@@ -13,3 +13,6 @@ PlugItStudio/PlugItStudio/obj/Debug/net5.0-windows/PlugItStudio.csproj.FileListA
 *.targets
 *.info
 *.xml
+*.resources
+*.resx
+PlugItStudio/.vs/PlugItStudio/v16/.suo

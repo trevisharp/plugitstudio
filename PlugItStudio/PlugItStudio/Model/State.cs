@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Model.Script
+namespace Model
 {
     public class State
     {

@@ -76,8 +76,6 @@ public class FrmMain : Form
                 foreach (var component in _components)
                     component.KeyDown(e.KeyCode, e.Alt, e.Control, e.Shift);
             }
-            foreach (var component in _components)
-                component.Tick();
         };
 
         this.Load += async delegate
